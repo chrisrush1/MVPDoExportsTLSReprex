@@ -9,9 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 import java.net.URL;
+
 
 public class Main extends Application {
     private static final String BASE_URL = "https://wmts10.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/11/1074/";
@@ -54,7 +54,7 @@ public class Main extends Application {
                     System.out.println(urlString);
                     URL url = new URL(urlString);
                     try {
-                        //open inputStream to show SSLHandshakeExpception from main project
+                        //open inputStream to show SSLHandshakeExpception seen in main project
                         InputStream inputStream = url.openConnection().getInputStream();
 
                         image = new Image(urlString, true);
@@ -70,12 +70,9 @@ public class Main extends Application {
             }
         };
         new Thread(mapTileLoadTask).start();
-        //load map tile from server
-
-    }
+            }
 
     public synchronized void setMapImage(Image image) {
-        System.out.println("load that image!");
         Platform.runLater(() -> {
             if (iv != null)
                 iv.setImage(image);

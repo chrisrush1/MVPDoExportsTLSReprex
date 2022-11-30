@@ -13,6 +13,7 @@ repositories {
 
 def java_home = System.getenv('JAVA_HOME')//openJDK 11.0 causes the TLSv1.3 bug, 11.2 has the TLSv1.3 fix so the TLS bug is not a problem with that version
 
+
 sourceCompatibility = 11
 targetCompatibility = 11
 
@@ -33,14 +34,16 @@ shadowJar {
 }
 
 application {
+
+    println "JavaHome path:${java_home}"
     mainClassName = "sample.Launcher"
 
     applicationName = "Reprex"
 
     //beryx runtime will use the default JVM args
     applicationDefaultJvmArgs = [
-            // '-Djavax.net.debug=ssl:handshake',//for debugging
-            '-Djdk.tls.client.protocols=TLSv1.2',//force TLS v1.2 because there is a bug in JDK versions less that 12 with multiple requests using TLS v1.3 (Swiss Topo maps needs this)
+//            '-Djavax.net.debug=ssl:handshake',//for debugging
+            //'-Djdk.tls.client.protocols=TLSv1.2',//force TLS v1.2 because there is a bug in JDK versions less that 11.02 with multiple requests using TLS v1.3
             '--add-exports', 'java.base/javax.naming=ALL-UNNAMED',
             '--add-exports', 'javafx.base/com.sun.javafx.event=ALL-UNNAMED',
             '--add-exports', 'javafx.base/com.sun.javafx.runtime=ALL-UNNAMED',
@@ -59,6 +62,7 @@ application {
 }
 
 runtime {
-    println "JavaHome path:${java_home}"
+    javaHome.set(System.getenv('JAVA_HOME'))//make sure the runtime uses the correct JDK version
+    println "JavaHome path:${javaHome.get()}"
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
 }
